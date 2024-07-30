@@ -17,15 +17,11 @@ Dir['./test/models/*.rb'].each { |f| require f }
 
 require 'active_record/fixtures'
 
-fixtures_constant = if defined?(ActiveRecord::FixtureSet)
-  ActiveRecord::FixtureSet
-elsif defined?(ActiveRecord::Fixtures)
-  ActiveRecord::Fixtures
-else
-  Fixtures
-end
+fixtures_dir = 'test/fixtures/'
+fixture_files = Dir[File.join(fixtures_dir, "**/*.{yml}")]
+  .reject { |f| f.start_with?(File.join(fixtures_dir, "files")) }
+  .map { |f| f[fixtures_dir.to_s.size..-5].delete_prefix("/") }
 
-base_test_class = defined?(Minitest::Test) ? Minitest::Test : MiniTest::Unit::TestCase
-class TestCase < base_test_class; end
+ActiveRecord::FixtureSet.create_fixtures(fixtures_dir, fixture_files)
 
-fixtures_constant.create_fixtures('test/fixtures/', ActiveRecord::Base.connection.tables)
+class TestCase < Minitest::Test; end
