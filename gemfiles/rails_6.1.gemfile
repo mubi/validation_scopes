@@ -3,6 +3,7 @@
 source "http://www.rubygems.org"
 
 gem "appraisal"
+gem "sqlite3", "~> 1.4"
 gem "activerecord", "~> 6.1.0"
 
-gemspec :path => "../"
+gemspec path: "../"
